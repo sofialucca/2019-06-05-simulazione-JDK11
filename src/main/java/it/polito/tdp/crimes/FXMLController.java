@@ -5,8 +5,12 @@
 package it.polito.tdp.crimes;
 
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.crimes.model.DistrettoNumero;
+import it.polito.tdp.crimes.model.District;
 import it.polito.tdp.crimes.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -25,13 +29,13 @@ public class FXMLController {
     private URL location;
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<String> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxMese"
-    private ComboBox<?> boxMese; // Value injected by FXMLLoader
+    private ComboBox<String> boxMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGiorno"
-    private ComboBox<?> boxGiorno; // Value injected by FXMLLoader
+    private ComboBox<String> boxGiorno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnCreaReteCittadina"
     private Button btnCreaReteCittadina; // Value injected by FXMLLoader
@@ -47,9 +51,51 @@ public class FXMLController {
 
     @FXML
     void doCreaReteCittadina(ActionEvent event) {
+    	txtResult.clear();
+    	String s = this.boxAnno.getValue();
+    	if(s == null) {
+    		txtResult.appendText("ERRORE: scegliere un anno di riferimento\n");
+    		return;
+    	}
+    	
+    	model.creaGrafo(Integer.parseInt(s));
+    	txtResult.appendText("NELL'ANNO " + s + "i 7 distretti erano distanti (km)");
+    	Map<District, List<DistrettoNumero>> result = model.getAdiacenze();
+    	int i = 1;
+    	for(List<DistrettoNumero> l : result.values()) {
+    		txtResult.appendText("\n\nDISTRETTO: " + i);
+    		for(DistrettoNumero dn : l) {
+    			txtResult.appendText("\n" + dn.toString());
+    		}
+    		i++;
+    	}
+    	
+
+    	this.boxMese.setDisable(false);
 
     }
+    
+    @FXML
+    void changeGiorni(ActionEvent event) {
 
+    	String s = this.boxMese.getValue();
+    	if(s == null) {
+    		return;
+    	}
+    	
+    	this.boxGiorno.getItems().setAll(model.getGiorni(Integer.parseInt(s), Integer.parseInt(this.boxAnno.getValue())));
+    	this.boxGiorno.setDisable(false);
+    }
+    
+
+    @FXML
+    void allowSim(ActionEvent event) {
+    	if(this.boxGiorno.getValue() != null) {
+        	this.txtN.setDisable(false);
+        	this.btnSimula.setDisable(false);
+    	}
+    }
+    
     @FXML
     void doSimula(ActionEvent event) {
 
@@ -64,10 +110,11 @@ public class FXMLController {
         assert btnSimula != null : "fx:id=\"btnSimula\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtN != null : "fx:id=\"txtN\" was not injected: check your FXML file 'Scene.fxml'.";
         assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Scene.fxml'.";
-
     }
     
     public void setModel(Model model) {
     	this.model = model;
+    	this.boxAnno.getItems().setAll(model.getAnni());
+    	this.boxMese.getItems().setAll(model.getMesi());
     }
 }
