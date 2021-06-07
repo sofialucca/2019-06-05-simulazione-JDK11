@@ -137,7 +137,7 @@ public class Model {
 					}
 					String categoria = event.getOffense_category_id();
 					int tempo = 2 ;
-					if(categoria.equals("all_other_crimes")) {
+					if(categoria.equals("all-other-crimes")) {
 						double prob = Math.random();
 						if(prob <= 0.5) {
 							tempo = 1;

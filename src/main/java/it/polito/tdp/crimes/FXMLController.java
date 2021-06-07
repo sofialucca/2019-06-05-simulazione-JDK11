@@ -108,7 +108,9 @@ public class FXMLController {
     	int anno = Integer.parseInt(boxAnno.getValue());
     	int n =  Integer.parseInt(txtN.getText());
     	
-    	
+    	model.init(mese, giorno, anno, n);
+    	model.run();
+    	txtResult.appendText("Numero di crimini gestiti in modo scorretto il giorno " + giorno + " - " + mese + " - " + anno + " con " + n + " poliziotti  è " + model.getNMalGestiti());
     }
 
     private boolean isValid() {
