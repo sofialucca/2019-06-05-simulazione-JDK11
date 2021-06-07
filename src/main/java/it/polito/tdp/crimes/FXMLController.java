@@ -5,6 +5,7 @@
 package it.polito.tdp.crimes;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -98,10 +99,38 @@ public class FXMLController {
     
     @FXML
     void doSimula(ActionEvent event) {
-
+    	txtResult.clear();
+    	if(!isValid()) {
+    		return;
+    	}
+    	int giorno = Integer.parseInt(boxGiorno.getValue());
+    	int mese = Integer.parseInt(boxMese.getValue());
+    	int anno = Integer.parseInt(boxAnno.getValue());
+    	int n =  Integer.parseInt(txtN.getText());
+    	
+    	
     }
 
-    @FXML // This method is called by the FXMLLoader when initialization is complete
+    private boolean isValid() {
+		String s = this.txtN.getText();
+		if(s.equals("")) {
+			txtResult.appendText("ERRORE: scrivere un numero di poliziotti.");
+			return false;
+		}
+		try {
+			int n = Integer.parseInt(s);
+			if(n<1 || n>10) {
+				txtResult.appendText("ERRORE: n deve essere un valore tra 1 e 10");
+				return false;
+			}
+		}catch(NumberFormatException nfe) {
+			txtResult.appendText("ERRORE: n deve essere un numero intero");
+			return false;
+		}
+		return true;
+	}
+
+	@FXML // This method is called by the FXMLLoader when initialization is complete
     void initialize() {
         assert boxAnno != null : "fx:id=\"boxAnno\" was not injected: check your FXML file 'Scene.fxml'.";
         assert boxMese != null : "fx:id=\"boxMese\" was not injected: check your FXML file 'Scene.fxml'.";
